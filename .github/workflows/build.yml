@@ -16,3 +16,12 @@ jobs:
           distribution: 'graalvm'
       - run: ./gradlew build
       - run: ./gradlew nativeCompile
+      - name: show results
+        run: ls -lah build/native/nativeCompile && file build/native/nativeCompile/*
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcresults-macos-arm64
+          path: build/native/nativeCompile/xcresults
+
