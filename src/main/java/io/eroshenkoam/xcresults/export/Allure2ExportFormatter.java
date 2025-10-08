@@ -250,13 +250,21 @@ public class Allure2ExportFormatter implements ExportFormatter {
         for (JsonNode node : nodes) {
             final String originalFileName = node.get(FILENAME).get(VALUE).asText();
             final String fileExtension = FilenameUtils.getExtension(originalFileName);
-            final String sources = getAttachmentFileName(fileExtension);
+            final String effectiveExt = FILE_EXTENSION_HEIC.equals(fileExtension) ? "jpeg" : fileExtension;
+
+            final String sources = getAttachmentFileName(effectiveExt);
             final String fileName = FILE_EXTENSION_HEIC.equals(fileExtension)
                     ? String.format("%s.%s", FilenameUtils.getBaseName(originalFileName), "jpeg")
                     : originalFileName;
+
             final Attachment attachment = new Attachment()
                     .setSource(sources)
-                    .setName(fileName);
+                    .setName(fileName)
+                    .setType(
+                        "jpeg".equalsIgnoreCase(effectiveExt) ? "image/jpeg" :
+                        "jpg".equalsIgnoreCase(effectiveExt)  ? "image/jpeg" :
+                        "png".equalsIgnoreCase(effectiveExt)  ? "image/png"   : null
+                    );
             attachments.add(attachment);
         }
         return attachments;
